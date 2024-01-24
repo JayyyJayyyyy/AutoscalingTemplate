@@ -1,5 +1,11 @@
-# AutoscalingTemplate
-Purpose of this project how to configure AWS Load Balancers with Auto Scaling Group and Launch Template.
+# Hands-on EC2-08 : Configuring Application Load Balancer (ALB) with Auto Scaling Group (ASG) using Launch Template
+
+Purpose of the this hands-on training is to give the students basic knowledge of how to configure AWS Load Balancers with Auto Scaling Group and Launch Template.
+
+## Learning Outcomes
+
+At the end of the this hands-on training, students will be able to;
+
 - create and configure a load balancer with Target Group.
 
 - create and configure Auto Scaling Group with Launch Template.
@@ -474,5 +480,113 @@ Alarm name                      : Auto Scaling-Remove
 Alarm description - optional    : Auto Scaling-Remove
 ```
 
-- Click `Next...
- This snippet was truncated for disp
+- Click `Next`, Review and Create Alarm
+
+- Go back to Autoscaling page and refresh the Cloudwatch Alarm
+
+- Select `Auto Scaling-Remove` as Cloudwatch Alarm
+
+- Take the Action :
+
+```text
+Remove --- 1 ---- Capacity Unit
+An Then wait   : 200
+```
+
+Step 3: Testing
+
+- Go to Instance Menu
+
+- Select one of the Auto Scaling Instance and connect with SSH
+
+- Upload `stress tool`
+
+```bash
+sudo yum install -y stress
+stress --cpu 80 --timeout 20000   
+```
+
+- Click the instance's Monitoring Tab and show the effect of `stress tool` on CPU Utilization
+
+- Show newly created instance based on `add-policy`
+
+- Go to instance terminal and stop `stress tool` with `CTRL-C`
+
+- Show the removed instance after `stress tool` stops based on `remove-policy`
+
+- Delete the Simple Policies
+
+Step 4: Add Step Scaling Policy
+
+- Go to `Auto Scaling Groups` --> click `First-AS-Group` --> `Automatic Scaling` --> `Add Policy`
+
+
+  1. Create `Add-Policy`;
+
+- Select `Step Scaling` as Policy Type
+
+- Name :
+```text
+Step Policy Name : First Step Policy-Add
+```
+
+- Select `Auto Scaling-Add` as Cloudwatch Alarm
+
+- Take the Action : 
+
+```text
+Add --- 1 ---- Capacity Unit ----when 60---    <=    CPUUtilization 90
+
+
+Click "Add step"
+
+Add ----2 -----Capacity Unit ----when 90 ----  <= Infinity
+
+An Then wait   : 200
+```
+
+  2. Create `Remove-Policy`;
+
+- Name :
+```text
+Step Policy Name : First Step Policy-Add
+```
+
+- Select `Step Scaling` as Policy Type
+
+- Select `Auto Scaling-Remove` as Cloudwatch Alarm
+
+- Take the Action :
+
+```text
+Remove --- 1 ---- Capacity Unit
+An Then wait   : 200
+```
+
+- Use the stress tool on EC2 Instances
+
+- Stop the stress tool with CTRL + C
+
+- Delete the Step Polices
+
+- Step 5: Show target Tracing Policy
+
+- Go to `Auto Scaling Groups` --> click `First-AS-Group` --> `Automatic Scaling` --> `Add Policy`
+
+
+- Click `Add-Policy`;
+
+
+```text
+Policy Type         : Target Tracking Policy
+Scaling Policy Name : First Target Tracking
+Target value        : 60
+Instances need      : 200 sec
+```
+Use the stress tool on EC2 Instances
+
+- Stop the stress tool with CTRL + C
+
+- Delete the Target Tracking  Policy
+
+- Delete Auto-scaling group and Load Balancer
